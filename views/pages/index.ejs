@@ -4,19 +4,28 @@
 		<% include ../partials/head.ejs %>
 	</head>
 
-	<body>
-		<div class="container">
-			<h1 style="text-align: center">Welcome to FreeClicker</h1>
-			<h3 style="text-align: center">
-				The open source alternative to iClicker
-			</h3>
-			<div class="btn-group col-xs-4 col-xs-offset-5">
-				<a class="btn btn-primary btn-lg" 
-					href="/auth/google">
-					Sign Up/Login
-				</a>
-			</div>
-		</div>
+	<body id="intro-body">
+		<div class="header">
+ 			<div class="inline-block" id="logo" >Lecture.io</div>
+ 			 	<a   href="/auth/google" style="float: right; margin-right: 60px;margin-top:20px;color: #205081;" >Sign Up or Sign In Using Google</a>
+ 		</div>
+ 		
+ 		<div class="body" style="width:100%;text-align:center; ">
+ 			<div style="font-size: 48px; color: #fff; margin-top: 120px;">
+ 				Engage students minds <br> Not their wallets
+ 			</div>
+ 			
+ 			
+ 			<div style="font-size: 24px; color: #fff; margin-top:20px;">
+<!--  			Money for nothing, and your clicks for free <br> -->
+ 			 	A free iClicker alternative
+ 			</div>
+ 			<a  href="/auth/google"><div class="button blue-background-btn" style="margin-top: 80px;">
+ 				Sign Up or Sign In Using Google
+ 			</div></a>
+ 			
+ 			
+ 		</div>
 	</body>
 </html>
 
