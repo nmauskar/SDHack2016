@@ -151,20 +151,24 @@ db.once('open', function() {
 				if(err) return err;
 				username = user.username;
 				var classes = [];
+				var classId = [];
 				var allClasses = user.ClassID;
 				for(var id = 0; id < allClasses.length; id++){
+
 					course.findById(allClasses[id], function(err, found){
 						if(err) return err;
 						classes.push(found.ClassName);
+						classId.push(found._id);
 					});
 				}	
 				setTimeout(function(){
 					console.log(classes);
 					res.render('pages/class', {
 						username : username,
-						classes : classes
+						classes : classes,
+						classid : classId
 					});
-				}, 1000);
+				}, 3000);
 			});
 		}
 		else {
@@ -186,30 +190,35 @@ db.once('open', function() {
 					numLecture : req.body.lectureNum
 				});
 				console.log(newClass);
+				var classes = [];
+				var classId = [];
 				//saves the new class to the database
 				newClass.save(function (err, course) {
 					if (err) return console.error(err);
 					user.ClassID.push(course._id);
 					user.save();
+					classes.push(course.ClassName);
+					classId.push(course._id);
 				});
 				
 
 				username = user.username;
-				var classes = [];
 				var allClasses = user.ClassID;
 				for(var id = 0; id < allClasses.length; id++){
 					course.findById(allClasses[id], function(err, found){
 						if(err) return err;
 						classes.push(found.ClassName);
+						classId.push(found._id);
 					});
 				}	
 				setTimeout(function(){
 					console.log(classes);
 					res.render('pages/class', {
 						username : username,
-						classes : classes
+						classes : classes,
+						classid : classId
 					});
-				}, 1000);
+				}, 3000);
 			});
 		}
 		else {
