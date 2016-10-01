@@ -54,11 +54,18 @@ db.once('open', function() {
 		}]
 	});
 
+	//defining answer schema
+	var AnswerSchema = new mongoose.Schema({
+		PID: String,
+		QuestionID: String,
+		Answer: String
+	})
+
 	var prof = mongoose.model('Professor', ProfSchema);
 	var course = mongoose.model('Class', ClassSchema);
 	// used to serialize the user for the session
 	passport.serializeUser(function(user, done) {
-		done(null, user.id); 
+		done(null, user.id);
 	});
 
 	// used to deserialize the user
@@ -78,7 +85,7 @@ db.once('open', function() {
 
 	}
 	console.log(cbURL);
-	
+
 	//google authorization
 	passport.use(new GoogleStrategy({
 		clientID:
@@ -88,7 +95,7 @@ db.once('open', function() {
 	},
 	function(accessToken, refreshToken, profile, done) {
 		prof.findOne({
-			'UID': profile.id 
+			'UID': profile.id
 		}, function(err, user) {
 			if (err) {
 				return done(err);
@@ -116,16 +123,16 @@ db.once('open', function() {
 			passport.authenticate('google', { scope: ['profile'] }));
 
 	//redirects based on login
-	app.get('/auth/google/callback', 
-			passport.authenticate('google', { 
+	app.get('/auth/google/callback',
+			passport.authenticate('google', {
 				successRedirect: '/profile',
-				failureRedirect: '/' 
+				failureRedirect: '/'
 			})
 			);
 
 	app.get('/profile', function(req, res){
 		if(req.isAuthenticated()){
-			
+
 			prof.findOne({
 				'_id': req.session.passport.user
 			}, function(err, user){
@@ -141,10 +148,10 @@ db.once('open', function() {
 			res.render('pages/index');
 		}
 	});
-	
+
 	app.get('/class', function(req, res){
 		if(req.isAuthenticated()){
-			
+
 			prof.findOne({
 				'_id': req.session.passport.user
 			}, function(err, user){
@@ -160,7 +167,7 @@ db.once('open', function() {
 						classes.push(found.ClassName);
 						classId.push(found._id);
 					});
-				}	
+				}
 				setTimeout(function(){
 					console.log(classes);
 					res.render('pages/class', {
@@ -175,11 +182,11 @@ db.once('open', function() {
 			res.render('pages/index');
 		}
 	});
-	
+
 	//creating class for prof
 	app.post('/createClass', function(req, res){
 		if(req.isAuthenticated()){
-			
+
 			prof.findOne({
 				'_id': req.session.passport.user
 			}, function(err, user){
@@ -200,7 +207,7 @@ db.once('open', function() {
 					classes.push(course.ClassName);
 					classId.push(course._id);
 				});
-				
+
 
 				username = user.username;
 				var allClasses = user.ClassID;
@@ -210,7 +217,7 @@ db.once('open', function() {
 						classes.push(found.ClassName);
 						classId.push(found._id);
 					});
-				}	
+				}
 				setTimeout(function(){
 					console.log(classes);
 					res.render('pages/class', {
@@ -239,4 +246,3 @@ db.once('open', function() {
 	});
 
 });
-
