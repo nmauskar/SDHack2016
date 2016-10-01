@@ -3,10 +3,11 @@ const app = express();
 const path = require('path');
 var mongoose = require('mongoose');
 var flash = require('connect-flash');
-// You need session to use connect flash
+var bodyparser = require('body-parser');
 var session = require('express-session');
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
+var Promise = require("bluebird");
 
 //setup
 app.set('port', (process.env.PORT || 8000));
@@ -17,30 +18,30 @@ app.use( session({
 	secret : 'elSecreto' ,
 	resave : true,
 }));
-app.use( passport.initialize());
-app.use( passport.session());
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(flash());
-
+app.use(bodyparser());
+Promise.promisifyAll(require("mongoose"));
 
 //databse intialization
 mongoose.connect("mongodb://heroku_wh98625c:hbuo8dj3vbdmpn34l9ij2spm9n@ds047666.mlab.com:47666/heroku_wh98625c");
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
-	// we're connected!
-
 
 	//defining professor schema
 	var ProfSchema = new mongoose.Schema({
 		username: String,
 		UID: String,
-		ClassID: [{type: String}]
+		ClassID: [{type: mongoose.Schema.Types.ObjectId}]
 	});
 
 	//defining class Schema
 	var ClassSchema = new mongoose.Schema({
 		ClassName: String,
-		LectureID: [{type: String}]
+		LectureID: [{type: mongoose.Schema.Types.ObjectId}],
+		numLecture: String
 	});
 
 	//defining Lecture Schema
@@ -54,6 +55,7 @@ db.once('open', function() {
 	});
 
 	var prof = mongoose.model('Professor', ProfSchema);
+	var course = mongoose.model('Class', ClassSchema);
 	// used to serialize the user for the session
 	passport.serializeUser(function(user, done) {
 		done(null, user.id); 
@@ -66,12 +68,23 @@ db.once('open', function() {
 		});
 	});
 
+	//debug for localhost testing
+	var cbURL;
+	console.log(app.get('port'));
+	if(app.get('port') == "8000"){
+		cbURL = "http://localhost:8000/auth/google/callback";
+	} else {
+		cbURL = "https://sdhack16.herokuapp.com/auth/google/callback";
+
+	}
+	console.log(cbURL);
+	
 	//google authorization
 	passport.use(new GoogleStrategy({
 		clientID:
 			"995418716168-n1va0lhckar2d3c2aouvh69cciif4mc9.apps.googleusercontent.com",
 		clientSecret:  "GphMQPTqZIZT0_fdywHCS3-9",
-		callbackURL: "https://sdhack16.herokuapp.com/auth/google/callback"
+		callbackURL: cbURL
 	},
 	function(accessToken, refreshToken, profile, done) {
 		prof.findOne({
@@ -137,11 +150,67 @@ db.once('open', function() {
 			}, function(err, user){
 				if(err) return err;
 				username = user.username;
-				res.render('pages/class', {
-					username : username
+				var classes = [];
+				var allClasses = user.ClassID;
+				for(var id = 0; id < allClasses.length; id++){
+					course.findById(allClasses[id], function(err, found){
+						if(err) return err;
+						classes.push(found.ClassName);
+					});
+				}	
+				setTimeout(function(){
+					console.log(classes);
+					res.render('pages/class', {
+						username : username,
+						classes : classes
+					});
+				}, 1000);
+			});
+		}
+		else {
+			res.render('pages/index');
+		}
+	});
+	
+	//creating class for prof
+	app.post('/createClass', function(req, res){
+		if(req.isAuthenticated()){
+			
+			prof.findOne({
+				'_id': req.session.passport.user
+			}, function(err, user){
+				if(err) return err;
+				//creates new uniq class
+				var newClass = new course({
+					ClassName : req.body.className,
+					numLecture : req.body.lectureNum
 				});
-			}
-			);
+				console.log(newClass);
+				//saves the new class to the database
+				newClass.save(function (err, course) {
+					if (err) return console.error(err);
+					user.ClassID.push(course._id);
+					user.save();
+				});
+				
+
+				username = user.username;
+				var classes = [];
+				var allClasses = user.ClassID;
+				for(var id = 0; id < allClasses.length; id++){
+					course.findById(allClasses[id], function(err, found){
+						if(err) return err;
+						classes.push(found.ClassName);
+					});
+				}	
+				setTimeout(function(){
+					console.log(classes);
+					res.render('pages/class', {
+						username : username,
+						classes : classes
+					});
+				}, 1000);
+			});
 		}
 		else {
 			res.render('pages/index');
@@ -154,9 +223,11 @@ db.once('open', function() {
 		console.log('Node app is running on port', app.get('port'));
 	});
 
+
 	//loading index
 	app.get('/', function(req, res) {
 		res.render('pages/index');
 	});
 
 });
+
