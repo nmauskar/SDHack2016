@@ -1,3 +1,62 @@
 p {
 	font-size: 125%;
 }
+
+a{
+	cursor:pointer;
+}
+
+#intro-body{
+	background-image: url("../../lib/media/intro-background.jpg");
+	background-repeat: no-repeat;
+	background-size: cover;
+	
+
+}
+#logo{
+	margin-left: 60px;
+	color: #205081;
+	font-size: 26px;
+	margin-top: 10px;
+}
+
+.header{
+	height: 60px;
+	width: 100%;
+	background-color: #fff;
+}
+
+.inline-block{
+	display:inline-block;
+}
+
+.button{
+	width: 392px;
+    background-repeat: no-repeat;
+    background-image: none;
+    box-shadow: none;
+    font-size: 16px;
+    padding: 12px 16px;
+    border: 0;
+	border-radius:6px;
+	display: inline-block;
+	cursor:pointer;
+}
+
+.blue-background-btn{
+	background-color: #1da1f2;
+	color: #fff;
+
+}
+
+.white-background-btn{
+	background-color: #fffff;
+	color: #1da1f2;;
+	border: 1px solid #1da1f2;
+}
+
+.entry-btn-wrapper{
+	text-align:center;
+	width: 100%;
+}
+
