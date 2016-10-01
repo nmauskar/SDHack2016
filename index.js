@@ -47,6 +47,7 @@ db.once('open', function() {
 	//defining Lecture Schema
 	var LectureSchema = new mongoose.Schema({
 		LectureName: String,
+		numQuestions: String,
 		Questions: [{
 			QuestionText: String,
 			QuestionID: String,
@@ -56,6 +57,7 @@ db.once('open', function() {
 
 	var prof = mongoose.model('Professor', ProfSchema);
 	var course = mongoose.model('Class', ClassSchema);
+	var lec = mongoose.model('Lecture', LectureSchema);
 	// used to serialize the user for the session
 	passport.serializeUser(function(user, done) {
 		done(null, user.id); 
@@ -162,13 +164,12 @@ db.once('open', function() {
 					});
 				}	
 				setTimeout(function(){
-					console.log(classes);
 					res.render('pages/class', {
 						username : username,
 						classes : classes,
 						classid : classId
 					});
-				}, 3000);
+				}, 2000);
 			});
 		}
 		else {
@@ -187,7 +188,7 @@ db.once('open', function() {
 				//creates new uniq class
 				var newClass = new course({
 					ClassName : req.body.className,
-					numLecture : req.body.lectureNum
+					numLecture : req.body.lectureNum,
 				});
 				console.log(newClass);
 				var classes = [];
@@ -212,13 +213,12 @@ db.once('open', function() {
 					});
 				}	
 				setTimeout(function(){
-					console.log(classes);
 					res.render('pages/class', {
 						username : username,
 						classes : classes,
 						classid : classId
 					});
-				}, 3000);
+				}, 2000);
 			});
 		}
 		else {
@@ -226,6 +226,44 @@ db.once('open', function() {
 		}
 	});
 
+	//creating class for prof
+	app.post('/lecture', function(req, res){
+		if(req.isAuthenticated()){
+			console.log(req.body);
+			course.findOne({
+				'_id': req.body.classID
+			}, function (err, newCourse){
+				if(err) console.log(err);
+				
+				var lectures = [];
+				var questions = [];
+				console.log(newCourse);
+				var allLectures = newCourse.LectureID;
+				for(var id = 0; id < allLectures.length; id++){
+					lec.findById(allLectures[id], function(err, found){
+						if(err) return err;
+						lectures.push(found.LectureName);
+						questions.push(found.Questions);
+					});
+				}	
+				setTimeout(function(){
+					res.render('pages/lectures', {
+						ClassName : newCourse.ClassName,
+						lectures : lectures,
+						Questions : questions
+					});
+				}, 2000);
+			});
+		}
+		else {
+			res.render('pages/index');
+		}
+	});
+
+	//handling iphone posts
+	app.post('/iphone', function(req, res){
+		
+	});
 
 	//getting port
 	app.listen(app.get('port'), function() {

@@ -24,9 +24,14 @@
 							<div class="modal-body">
 								<form id="lecForm" action="/createLecture" method="post">
 									<div class="form-group">
-										<label for="numQuestions">Class Name</label>
-										<input type="text" class="form-control" id="numQuestions" 
-											name="numQuestions" placeholder="CLASS 101">
+										<label for="LecName">Lecture Name</label>
+										<input type="text" class="form-control" id="lecName" 
+											name="lecName" placeholder="9/12/16">
+									</div>
+									<div class="form-group">
+										<label for="numQuestiosn">Number of questions</label>
+										<input type="number" class="form-control" id="numQuestions" 
+											name="numQuestions" placeholder="9/12/16">
 									</div>
 									<button type="submit" class="btn btn-default">Submit</button>
 								</form>	
@@ -34,8 +39,6 @@
 							<div class="modal-footer">
 								<button type="button" class="btn btn-default" 
 									data-dismiss="modal">Close</button>
-								<button type="button" class="btn btn-primary" type="submit"
-									form="lecForm">Create Class</button>
 							</div>
 						</div>
 					</div>
@@ -47,7 +50,7 @@
 			<ul class="list-group">
 				<!-- iterates through classes and lists them out -->
 				<% for(var i = 0; i < lectures.length; i++){ %>
-					<button type="button" class="list-group-item class<%= i %>"
+					<button type="button" class="list-group-item lecture<%= i %>"
 						style="font-size: 125%">
 						<%= lectures[i] %>
 					</button>

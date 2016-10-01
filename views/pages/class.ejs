@@ -50,10 +50,10 @@
 			<ul class="list-group">
 				<!-- iterates through classes and lists them out -->
 				<% for(var i = 0; i < classes.length; i++){ %>
-					<form action="/lecture" method="get">
+					<form action="/lecture" method="post">
 						<input type="hidden" name="classID" value="<%=classid[i]%>" />
-						<button type="button" class="list-group-item class<%= i %>"
-							style="font-size: 125%" action="/lecture" method="get">
+						<button type="submit" class="list-group-item class<%= i %>"
+							style="font-size: 125%" >
 							<%= classes[i] %>
 						</button>
 					</form>
