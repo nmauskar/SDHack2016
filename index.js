@@ -268,7 +268,7 @@ db.once('open', function() {
 	});
 
 	//handling creating a new lecture object
-	app.post('
+	//app.post('
 	//handling iphone posts
 	app.post('/iphone', function(req, res){
 		console.log(req.body);
