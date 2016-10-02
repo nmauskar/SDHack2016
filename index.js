@@ -269,7 +269,7 @@ db.once('open', function() {
 
 	//handling iphone posts
 	app.post('/iphone', function(req, res){
-		console.log(req);
+		console.log(req.body);
 		console.log("something recieved");
 	});
 
