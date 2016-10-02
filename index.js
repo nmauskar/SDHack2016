@@ -67,6 +67,7 @@ db.once('open', function() {
 	var prof = mongoose.model('Professor', ProfSchema);
 	var course = mongoose.model('Class', ClassSchema);
 	var lec = mongoose.model('Lecture', LectureSchema);
+	var ans = mongoose.model('Answer', AnswerSchema);
 	// used to serialize the user for the session
 	passport.serializeUser(function(user, done) {
 		done(null, user.id);
@@ -365,9 +366,12 @@ db.once('open', function() {
 		console.log(req.body);
 		console.log("something recieved");
 		lec.find({'QuestionID' : req.body.qid}, function(err, lecture){
-			lecture.Responses.push({'PID' : req.body.PID, 
-															'QuestionID' : req.body.qid,
-															'Answer' : req.body.Answer});
+			var answer = new ans({
+				PID : req.body.PID,
+				QuestionID : req.body.qid,
+				Answer : req.body.Answer
+			});
+			lecture.Responses.push(answer); 
 			lecture.save();
 		});
 		res.json(200);
