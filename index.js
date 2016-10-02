@@ -364,14 +364,15 @@ db.once('open', function() {
 	app.post('/iphone', function(req, res){
 		console.log(req.body);
 		console.log("something recieved");
-		lec.find({'QuestionID' : req.body.QuestionID}, function(err, lecture){
+		lec.find({'QuestionID' : req.body.qid}, function(err, lecture){
 			lecture.Responses.push({'PID' : req.body.PID, 
-															'QuestionID' : req.body.QuestionID,
+															'QuestionID' : req.body.qid,
 															'Answer' : req.body.Answer});
 			lecture.save();
 		});
 		res.json(200);
 	});
+
 
 	//getting port
 	app.listen(app.get('port'), function() {
