@@ -233,7 +233,7 @@ db.once('open', function() {
 		}
 	});
 
-	//creating class for prof
+	//loading lectures
 	app.post('/lecture', function(req, res){
 		if(req.isAuthenticated()){
 			console.log(req.body);
@@ -267,10 +267,13 @@ db.once('open', function() {
 		}
 	});
 
+	//handling creating a new lecture object
+	app.post('
 	//handling iphone posts
 	app.post('/iphone', function(req, res){
 		console.log(req.body);
 		console.log("something recieved");
+		res.end();
 	});
 
 	//getting port
