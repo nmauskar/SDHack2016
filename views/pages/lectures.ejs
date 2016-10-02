@@ -29,11 +29,12 @@
 											name="lecName" placeholder="9/12/16">
 									</div>
 									<div class="form-group">
-										<label for="numQuestiosn">Number of questions</label>
+										<label for="numQuestions">Number of questions</label>
 										<input type="number" class="form-control" id="numQuestions" 
-											name="numQuestions" placeholder="9/12/16">
+											name="numQuestions" placeholder="3">
 									</div>
-									<button type="submit" class="btn btn-default">Submit</button>
+									<input type="hidden" value="<%= classID %>" name="classID" />
+									<button type="submit" class="btn btn-primary">Submit</button>
 								</form>	
 							</div>
 							<div class="modal-footer">
@@ -45,15 +46,49 @@
 				</div> <!-- ./modal-->
 			</div>
 			<br>
-			<br>
-			<h3> Your Courses </h3>
+			<br>`
+			<h3> Your Lectures </h3>
 			<ul class="list-group">
 				<!-- iterates through classes and lists them out -->
 				<% for(var i = 0; i < lectures.length; i++){ %>
 					<button type="button" class="list-group-item lecture<%= i %>"
-						style="font-size: 125%">
+						style="font-size: 125%" data-toggle="modal" 
+															data-target="#question<%= i %>">
 						<%= lectures[i] %>
 					</button>
+					<div class="modal fade" id="question<%= i %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+									<h3 class="modal-title" id="myModalLabel">Create a new lecture</h3>
+								</div>
+								<div class="modal-body">
+									<form id="lecForm" action="/createQuestions" method="post">
+										<% for(var j = 0; j < Number(questionNums[i]); j++) { %>
+											<div class="form-group">
+												<label for="QuestionText">Question Text</label>
+												<input type="text" class="form-control" 
+													id="Qtext" name="Qtext" 
+													placeholder="What is 2+2?">
+											</div>
+											<div class="form-group">
+												<label for="numQuestion">Answer</label>
+												<input type="text" class="form-control" id="Qans" 
+													name="Qans" placeholder="A">
+											</div>
+										<% } %>
+										<input type="hidden" value="<%= LecID[i] %>" name="LecID" />
+										<button type="submit" class="btn btn-primary">Submit</button>
+									</form>	
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-default" 
+										data-dismiss="modal">Close</button>
+								</div>
+							</div>
+						</div>
+					</div><!-- ./modal -->
 				<% } %>
 			</ul>
 
@@ -61,8 +96,3 @@
 	</body>
 	<% include ../partials/footer.ejs %>
 </html>
-
-
-
-
-
