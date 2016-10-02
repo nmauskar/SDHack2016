@@ -273,7 +273,7 @@ db.once('open', function() {
 	app.post('/iphone', function(req, res){
 		console.log(req.body);
 		console.log("something recieved");
-		res.end();
+		res.json(200);
 	});
 
 	//getting port
